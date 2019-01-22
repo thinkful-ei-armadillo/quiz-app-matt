@@ -8,47 +8,47 @@ const QUESTIONS = [{
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+2?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+3?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+4?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+5?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+6?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+7?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+8?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+9?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 },
 {
-  q: 'What is 1+1?',
+  q: 'What is 1+10?',
   choices: [1, 2, 3, 4, 5],
   correctAnswer: 2
 }
@@ -121,7 +121,11 @@ function reset(){
 }
 
 function removesQuestion(){
-  $('question-form').remove();
+  $('.question-form').remove();
+}
+
+function removesFeedback(){
+  $('.feed-back').remove();
 }
 
 function handlesSubmit() {
@@ -132,9 +136,10 @@ function handlesSubmit() {
     const  bol = answerChecker(ans1);
 
     generateFeedback(bol);
+    increasePage();
     removesQuestion();
     rendersFeedBack();
-    increasePage();
+    
   });
 }
 
@@ -143,27 +148,30 @@ function answerChecker(input){
   const userAns = Number(input);
 
   console.log('checking your answer...');
-
+  
   if(userAns === QUESTIONS[STORE.pageNumber-1].correctAnswer){
     STORE.totalCorrect++;
-    return true;
+    return 0;
   }
   else{
     STORE.totalWrong++;
-    return false;
+    return 1;
   }
 }
 
 // generate feedback page
 
 function generateFeedback(boolean){
-  if(boolean === true){
+  console.log(boolean);
+
+  switch (boolean) {
+  case 0:
     return `<div class='feed-back'>
     <h2>Correct! </h2>
     <button type="button">Continue!</button>
     </div>`;
-  }
-  else{
+  
+  default:
     return `<div class='feed-back'>
     <h2>Incorrect! </h2>
     <p>The correct answer for ${QUESTIONS[STORE.pageNumber-1].q} is ${QUESTIONS[STORE.pageNumber-1].correctAnswer}
@@ -177,8 +185,9 @@ function rendersFeedBack(){
 }
 
 function handleFeedbackButton(){
-  $('.feedback.page').on('click','button', function(event){
+  $('.feedback-page').on('click','button', function(event){
     console.log('going to next question');
+    removesFeedback();
     rendersQuestions();
   });
   

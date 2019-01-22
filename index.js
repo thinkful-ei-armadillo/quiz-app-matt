@@ -138,10 +138,10 @@ function handlesSubmit() {
     const ans1 = getUserAnswer();
     const  bol = answerChecker(ans1);
 
-    generateFeedback(bol);
+    
     increasePage();
     removesQuestion();
-    rendersFeedBack();
+    rendersFeedBack(generateFeedback(bol),bol);
     
   });
 }
@@ -168,7 +168,7 @@ function generateFeedback(bool){
   console.log(bool);
   console.log(typeof bool);
 
-  if(bool === false){
+  if(bool === true){
     return `<div class='feed-back'>
       <h2>Correct! </h2>
       <button type="button">Continue!</button>
@@ -177,15 +177,15 @@ function generateFeedback(bool){
   else{
     return `<div class='feed-back'>
       <h2>Incorrect! </h2>
-      <p>The correct answer for ${QUESTIONS[STORE.currentQuestion].q} is ${QUESTIONS[STORE.currentQuestion].correctAnswer}
+      <p>The correct answer for "${QUESTIONS[STORE.currentQuestion].q}" is ${QUESTIONS[STORE.currentQuestion].correctAnswer}!
       <button type="button">Continue!</button>
       </div>`;
   }
 
 }
 
-function rendersFeedBack(){
-  $('.feedback-page').html(generateFeedback());
+function rendersFeedBack(html,bool){
+  $('.feedback-page').html(generateFeedback(bool));
 }
 
 function handleFeedbackButton(){

@@ -59,7 +59,7 @@ const STORE = {
   userAnswers: [], // all of user's answers
   totalCorrect: 0, // number of correct answers
   totalWrong: 0,
-  currentQuestion: 1, // current question
+  currentQuestion: -1, // current question
   pageNumber: 0,
 };
 
@@ -70,7 +70,6 @@ function increasePage() {
 
 // takes out intro
 function removesIntro() {
-  
   $('.intro-section').on('click', 'button', function (event) {
     $('.intro-section').remove();
     increasePage(); // intro page is page 0, so +1 when called to next page
@@ -83,6 +82,7 @@ function generateQuestions() {
   let q = '';
   const correctWrong =getTotalCorrect();
   
+  STORE.currentQuestion++;
   for (let i = 0; i < QUESTIONS[STORE.pageNumber - 1].choices.length; i++)
     q += `<input type="radio" name="a1" value="${QUESTIONS[STORE.pageNumber-1].choices[i]}" > ${QUESTIONS[STORE.pageNumber-1].choices[i]}<br>`;
 
@@ -113,6 +113,7 @@ function getTotalCorrect(){
   return anw2;
 }
 
+// resets the STORE object
 function reset(){
   STORE.userAnswers = [];
   STORE.totalCorrect = 0;
@@ -161,23 +162,22 @@ function answerChecker(input){
 
 // generate feedback page
 
-function generateFeedback(boolean){
-  console.log(boolean);
+function generateFeedback(bool){
+  console.log(bool);
 
-  switch (boolean) {
-  case 0:
+  if(bool === 0)
     return `<div class='feed-back'>
-    <h2>Correct! </h2>
-    <button type="button">Continue!</button>
-    </div>`;
+      <h2>Correct! </h2>
+      <button type="button">Continue!</button>
+      </div>`;
   
-  default:
+  else
     return `<div class='feed-back'>
-    <h2>Incorrect! </h2>
-    <p>The correct answer for ${QUESTIONS[STORE.pageNumber-1].q} is ${QUESTIONS[STORE.pageNumber-1].correctAnswer}
-    <button type="button">Continue!</button>
-    </div>`;
-  }
+      <h2>Incorrect! </h2>
+      <p>The correct answer for ${QUESTIONS[STORE.currentQuestion].q} is ${QUESTIONS[STORE.currentQuestion].correctAnswer}
+      <button type="button">Continue!</button>
+      </div>`;
+
 }
 
 function rendersFeedBack(){
@@ -187,22 +187,44 @@ function rendersFeedBack(){
 function handleFeedbackButton(){
   $('.feedback-page').on('click','button', function(event){
     console.log('going to next question');
-    removesFeedback();
+    if(STORE.currentQuestion === QUESTIONS.length)
+      renderScorePage();
+    else{
+      removesFeedback();
+      rendersQuestions();
+    }
+  });
+}
+
+// makes html for score page
+function scorePage(){
+  return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${QUESTIONS.length}</h1>
+  <p>Do you want to try again?</p><span><button type="button">Ok</button></div>`;
+}
+
+function renderScorePage(){
+  if(STORE.currentQuestion === QUESTIONS.length)
+    $('.results').html(scorePage);
+}
+
+function removeScorePage(){
+  $('.score-display').remove();
+}
+
+function handlesScoreReset(){
+  $('.result').on('click','button',function(event){
+    reset();
+    removeScorePage();
     rendersQuestions();
   });
-  
 }
-// template generator 
-function generateAnswerList(answers) {
 
-}
-//
 
 function main() {
   removesIntro();
   handlesSubmit();
   handleFeedbackButton();
-
+  handlesScoreReset();
 }
 
 $(main);

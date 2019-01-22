@@ -90,7 +90,7 @@ function generateQuestions() {
   <h2>Question ${STORE.pageNumber}</h2>
   <p>${QUESTIONS[STORE.pageNumber-1].q}</p>
   ${q}
-  <button type="submit" class="submit-button">Submit</button>
+  <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
 </form>
 <div class='correct-wrong'>${correctWrong[0]} correct, ${correctWrong[1]} wrong</div>
 <footer>Page #${STORE.pageNumber}</footer>`;
@@ -109,19 +109,80 @@ function getUserAnswer(){
 
 // returns  the total correct and total wrong
 function getTotalCorrect(){
-  let  anw2 = [STORE.totalCorrect,STORE.totalWrong];
+  let anw2 = [STORE.totalCorrect,STORE.totalWrong];
   return anw2;
+}
+
+function reset(){
+  STORE.userAnswers = [];
+  STORE.totalCorrect = 0;
+  STORE.totalWrong = 0;
+  STORE.pageNumber = 0;
+}
+
+function removesQuestion(){
+  $('question-form').remove();
 }
 
 function handlesSubmit() {
   $('.question-section').on('submit','.question-form',function(event){
     event.preventDefault();
-    console.log('handle submit ran');
+
     const ans1 = getUserAnswer();
+    const  bol = answerChecker(ans1);
+
+    generateFeedback(bol);
+    removesQuestion();
+    rendersFeedBack();
     increasePage();
   });
 }
 
+// check if answer is right or wrong AND INCREMENTS total correct and wrong accordingly
+function answerChecker(input){
+  const userAns = Number(input);
+
+  console.log('checking your answer...');
+
+  if(userAns === QUESTIONS[STORE.pageNumber-1].correctAnswer){
+    STORE.totalCorrect++;
+    return true;
+  }
+  else{
+    STORE.totalWrong++;
+    return false;
+  }
+}
+
+// generate feedback page
+
+function generateFeedback(boolean){
+  if(boolean === true){
+    return `<div class='feed-back'>
+    <h2>Correct! </h2>
+    <button type="button">Continue!</button>
+    </div>`;
+  }
+  else{
+    return `<div class='feed-back'>
+    <h2>Incorrect! </h2>
+    <p>The correct answer for ${QUESTIONS[STORE.pageNumber-1].q} is ${QUESTIONS[STORE.pageNumber-1].correctAnswer}
+    <button type="button">Continue!</button>
+    </div>`;
+  }
+}
+
+function rendersFeedBack(){
+  $('.feedback-page').html(generateFeedback());
+}
+
+function handleFeedbackButton(){
+  $('.feedback.page').on('click','button', function(event){
+    console.log('going to next question');
+    rendersQuestions();
+  });
+  
+}
 // template generator 
 function generateAnswerList(answers) {
 
@@ -130,8 +191,8 @@ function generateAnswerList(answers) {
 
 function main() {
   removesIntro();
-  
   handlesSubmit();
+  handleFeedbackButton();
 
 }
 

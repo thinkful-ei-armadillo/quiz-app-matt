@@ -56,7 +56,7 @@ const QUESTIONS = [{
 
 
 const STORE = {
-  userAnswers: [], // all of user's answers
+  userAnswers: [], // all of user's answers. Not used but could be useful later???
   totalCorrect: 0, // number of correct answers
   totalWrong: 0,
   currentQuestion: -1, // current question
@@ -97,7 +97,7 @@ function generateQuestions() {
 }
 
 function rendersQuestions() {
-  if(STORE.pageNumber > 0)
+  if(STORE.pageNumber > 0 && STORE.pageNumber < 11)
     $('.question-section').html(generateQuestions());
 }
 
@@ -119,6 +119,7 @@ function reset(){
   STORE.totalCorrect = 0;
   STORE.totalWrong = 0;
   STORE.pageNumber = 0;
+  STORE.currentQuestion = 0;
 }
 
 function removesQuestion(){
@@ -186,9 +187,10 @@ function rendersFeedBack(){
 
 function handleFeedbackButton(){
   $('.feedback-page').on('click','button', function(event){
-    console.log('going to next question');
-    if(STORE.currentQuestion === QUESTIONS.length)
+    if(STORE.pageNumber > QUESTIONS.length){
       renderScorePage();
+      removesFeedback();
+    }
     else{
       removesFeedback();
       rendersQuestions();
@@ -199,12 +201,11 @@ function handleFeedbackButton(){
 // makes html for score page
 function scorePage(){
   return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${QUESTIONS.length}</h1>
-  <p>Do you want to try again?</p><span><button type="button">Ok</button></div>`;
+  <p>Do you want to try again?</p><span><button type="button" class='reset'>Ok</button></div>`;
 }
 
 function renderScorePage(){
-  if(STORE.currentQuestion === QUESTIONS.length)
-    $('.results').html(scorePage);
+  $('.results').html(scorePage);
 }
 
 function removeScorePage(){
@@ -212,13 +213,14 @@ function removeScorePage(){
 }
 
 function handlesScoreReset(){
-  $('.result').on('click','button',function(event){
+  $('.results').on('click','.reset',function(event){
+    console.log('reset is being clicked');
     reset();
     removeScorePage();
+    increasePage();
     rendersQuestions();
   });
 }
-
 
 function main() {
   removesIntro();

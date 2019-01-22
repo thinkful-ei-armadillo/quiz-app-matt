@@ -10,17 +10,17 @@ const QUESTIONS = [{
 {
   q: 'What is 1+2?',
   choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  correctAnswer: 3
 },
 {
   q: 'What is 1+3?',
   choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  correctAnswer: 4
 },
 {
   q: 'What is 1+4?',
   choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  correctAnswer: 5
 },
 {
   q: 'What is 1+5?',
@@ -56,10 +56,10 @@ const QUESTIONS = [{
 
 
 const STORE = {
-  userAnswers: [], // all of user's answers. Not used but could be useful later???
+  userAnswers: [], // all of user's answers. Not used but could be useful later
   totalCorrect: 0, // number of correct answers
   totalWrong: 0,
-  currentQuestion: -1, // current question
+  currentQuestion: -1, // current question. needed to make -1 since it is initially incremented and needs to match QUESTION index
   pageNumber: 0,
 };
 
@@ -80,20 +80,21 @@ function removesIntro() {
 // renders question
 function generateQuestions() {
   let q = '';
-  const correctWrong =getTotalCorrect();
+  const correctWrong = getTotalCorrect();
   
   STORE.currentQuestion++;
   for (let i = 0; i < QUESTIONS[STORE.pageNumber - 1].choices.length; i++)
-    q += `<input type="radio" name="a1" value="${QUESTIONS[STORE.pageNumber-1].choices[i]}" > ${QUESTIONS[STORE.pageNumber-1].choices[i]}<br>`;
+    q += `<input type="radio" name="a1" value="${QUESTIONS[STORE.pageNumber-1].choices[i]}" required > ${QUESTIONS[STORE.pageNumber-1].choices[i]}<br>`;
 
   return `<form action="" class='question-form'>
   <h2>Question ${STORE.pageNumber}</h2>
   <p>${QUESTIONS[STORE.pageNumber-1].q}</p>
   ${q}
   <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
+  <div class='correct-wrong'>${correctWrong[0]} correct, ${correctWrong[1]} wrong</div>
+<footer>Page #${STORE.pageNumber}</footer>
 </form>
-<div class='correct-wrong'>${correctWrong[0]} correct, ${correctWrong[1]} wrong</div>
-<footer>Page #${STORE.pageNumber}</footer>`;
+`;
 }
 
 function rendersQuestions() {
@@ -153,11 +154,11 @@ function answerChecker(input){
   
   if(userAns === QUESTIONS[STORE.pageNumber-1].correctAnswer){
     STORE.totalCorrect++;
-    return 0;
+    return true;
   }
   else{
     STORE.totalWrong++;
-    return 1;
+    return false;
   }
 }
 
@@ -165,19 +166,21 @@ function answerChecker(input){
 
 function generateFeedback(bool){
   console.log(bool);
+  console.log(typeof bool);
 
-  if(bool === 0)
+  if(bool === false){
     return `<div class='feed-back'>
       <h2>Correct! </h2>
       <button type="button">Continue!</button>
       </div>`;
-  
-  else
+  }
+  else{
     return `<div class='feed-back'>
       <h2>Incorrect! </h2>
       <p>The correct answer for ${QUESTIONS[STORE.currentQuestion].q} is ${QUESTIONS[STORE.currentQuestion].correctAnswer}
       <button type="button">Continue!</button>
       </div>`;
+  }
 
 }
 
@@ -207,6 +210,7 @@ function scorePage(){
 function renderScorePage(){
   $('.results').html(scorePage);
 }
+
 
 function removeScorePage(){
   $('.score-display').remove();

@@ -59,12 +59,23 @@ const STORE = {
   totalWrong: 0,
   currentQuestion: -1, // current question. needed to make -1 since it is initially incremented and needs to match QUESTION index
   pageNumber: 0,
+  sliceArray: [],
 };
+
+// sets store object number of questions to user input
+function setNumberOfQuestions(){
+  STORE.numberOfQuestions = Number($('input[name="quantity"]').val());
+}
+
+// slicing question array and set sliceArray in store to sliced question array
+function sliceQuesionArray(){
+  STORE.sliceArray = QUESTIONS.slice(0,STORE.numberOfQuestions);
+}
 
 // function to shuffle QUESTIONS
 function randQuestions(){
   for(let i = 0; i < QUESTIONS.length; i++){
-    const position = Math.floor(Math.random() * 9);
+    const position = Math.floor(Math.random() * QUESTIONS.length);
     const temp = QUESTIONS[position];
     QUESTIONS[position] = QUESTIONS[i];
     QUESTIONS[i] = temp;

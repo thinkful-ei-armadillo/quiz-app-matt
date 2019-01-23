@@ -3,65 +3,73 @@
 // list of questions and choices with the correct answer
 // only put questions in separate object so to not clutter STORE object
 const QUESTIONS = [{
-  q: 'What is 1+1?',
+  q: 'What is 1 + 1?',
   choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  correctAnswer: '2'
 },
 {
-  q: 'What is 1+2?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 3
+  q: 'What is 3 * 2?',
+  choices: [2, 4, 6, 8, 10],
+  correctAnswer: '6'
 },
 {
-  q: 'What is 1+3?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 4
+  q: 'What is derivative of ln(x)?',
+  choices: ['1/x', 'x', '2x', '1/2x', '2/3'],
+  correctAnswer: '1/x'
 },
 {
-  q: 'What is 1+4?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 5
+  q: 'Prove the Bolzano–Weierstrass theorem',
+  choices: ['Bolzano what??', '42', 'Let epsilon > 0...', "I don't work in the real plane", 'Proof is trival and left to the reader'],
+  correctAnswer: 'Proof is trival and left to the reader'
 },
 {
-  q: 'What is 1+5?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  q: 'What is the residue of  1/(z(cos(z)) at 0?',
+  choices: ['1/2', '1/3', '1/5', '1/6', '1/7'],
+  correctAnswer: '1/6'
 },
 {
-  q: 'What is 1+6?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  q: 'Find the gcd (435,377)',
+  choices: ['12', '15', '14', '12', '29'],
+  correctAnswer: '29'
 },
 {
-  q: 'What is 1+7?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  q: 'Prove there are infinitely many primes?',
+  choices: ['Proof by contradiction...QED', 'There just are', 'There are not', 'Taco', 'Potato'],
+  correctAnswer: 'Proof by contradiction...QED'
 },
 {
-  q: 'What is 1+8?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  q: 'How many sides does a n-gon have?',
+  choices: ['no sides', '3', 'not enough', 'too many', 'n many'],
+  correctAnswer: 'n many'
 },
 {
   q: 'What is 1+9?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  choices: ['11', '20', '13', '10', '12'],
+  correctAnswer: '10'
 },
 {
-  q: 'What is 1+10?',
-  choices: [1, 2, 3, 4, 5],
-  correctAnswer: 2
+  q: 'What is 0!?',
+  choices: ['1', '0', '-1', '1.1', '-1.1'],
+  correctAnswer: '1'
 }
 ];
 
-
 const STORE = {
-  userAnswers: [], // all of user's answers. Not used but could be useful later
   totalCorrect: 0, // number of correct answers
   totalWrong: 0,
   currentQuestion: -1, // current question. needed to make -1 since it is initially incremented and needs to match QUESTION index
   pageNumber: 0,
 };
+
+// function to shuffle QUESTIONS
+function randQuestions(){
+  for(let i = 0; i < QUESTIONS.length; i++){
+    const position = Math.floor(Math.random() * 9);
+    const temp = QUESTIONS[position];
+    QUESTIONS[position] = QUESTIONS[i];
+    QUESTIONS[i] = temp;
+  }
+}
 
 // increments page # 
 function increasePage() {
@@ -104,7 +112,6 @@ function rendersQuestions() {
 
 function getUserAnswer(){
   const ans = $('input[name="a1"]:checked').val();
-  STORE.userAnswers.push(ans);
   return ans;
 }
 
@@ -116,7 +123,6 @@ function getTotalCorrect(){
 
 // resets the STORE object
 function reset(){
-  STORE.userAnswers = [];
   STORE.totalCorrect = 0;
   STORE.totalWrong = 0;
   STORE.pageNumber = 0;
@@ -138,7 +144,6 @@ function handlesSubmit() {
     const ans1 = getUserAnswer();
     const  bol = answerChecker(ans1);
 
-    
     increasePage();
     removesQuestion();
     rendersFeedBack(generateFeedback(bol),bol);
@@ -148,7 +153,7 @@ function handlesSubmit() {
 
 // check if answer is right or wrong AND INCREMENTS total correct and wrong accordingly
 function answerChecker(input){
-  const userAns = Number(input);
+  const userAns = input;
 
   console.log('checking your answer...');
   
@@ -165,8 +170,6 @@ function answerChecker(input){
 // generate feedback page
 
 function generateFeedback(bool){
-  console.log(bool);
-  console.log(typeof bool);
 
   if(bool === true){
     return `<div class='feed-back'>
@@ -211,7 +214,6 @@ function renderScorePage(){
   $('.results').html(scorePage);
 }
 
-
 function removeScorePage(){
   $('.score-display').remove();
 }
@@ -223,6 +225,7 @@ function handlesScoreReset(){
     removeScorePage();
     increasePage();
     rendersQuestions();
+    randQuestions();
   });
 }
 

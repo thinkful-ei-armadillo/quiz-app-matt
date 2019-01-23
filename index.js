@@ -77,7 +77,7 @@ function sliceQuesionArray(){
 // function to shuffle QUESTIONS
 function randQuestions(){
   for(let i = 0; i < STORE.sliceArray.length; i++){
-    const position = Math.floor(Math.random() * QUESTIONS.length-1);
+    const position = Math.floor(Math.random() * (QUESTIONS.length-1));
     const temp = QUESTIONS[position];
     STORE.sliceArray[position%STORE.sliceArray.length] = QUESTIONS[i];
     STORE.sliceArray[i] = temp;
@@ -221,8 +221,15 @@ function handleFeedbackButton(){
 
 // makes html for score page
 function scorePage(){
-  return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
-  <p>Do you want to try again?</p><span><button type="button" class='reset'>Ok</button></div>`;
+  return `<div class='score-display'>
+  <h1>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
+  <p>Do you want to try again?</p><span>
+  <button type="button" class='reset'>Ok</button>
+  <form class='q-n'action="">
+  # of Q's between 1 to 10:<input type="number" name="quantity" required min="1" max="10">
+  </form>
+  </div>
+  `;
 }
 
 function renderScorePage(){
@@ -237,6 +244,8 @@ function handlesScoreReset(){
   $('.results').on('click','.reset',function(event){
     console.log('reset is being clicked');
     reset();
+    setNumberOfQuestions();
+    sliceQuesionArray();
     removeScorePage();
     increasePage();
     randQuestions();

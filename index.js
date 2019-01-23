@@ -57,7 +57,7 @@ const QUESTIONS = [{
 const STORE = {
   totalCorrect: 0, // number of correct answers
   totalWrong: 0,
-  currentQuestion: -1, // current question. needed to make -1 since it is initially incremented and needs to match QUESTION index
+  currentQuestion: -1,
   pageNumber: 0,
 };
 
@@ -74,15 +74,6 @@ function randQuestions(){
 // increments page # 
 function increasePage() {
   STORE.pageNumber++;
-}
-
-// takes out intro
-function removesIntro() {
-  $('.intro-section').on('click', 'button', function (event) {
-    $('.intro-section').remove();
-    increasePage(); // intro page is page 0, so +1 when called to next page
-    rendersQuestions(); // renders the questions
-  });
 }
 
 // renders question
@@ -106,7 +97,7 @@ function generateQuestions() {
 }
 
 function rendersQuestions() {
-  if(STORE.pageNumber > 0 && STORE.pageNumber < 11)
+  if(STORE.pageNumber > 0 && STORE.pageNumber < QUESTIONS.length)
     $('.question-section').html(generateQuestions());
 }
 
@@ -129,14 +120,6 @@ function reset(){
   STORE.currentQuestion = -1;
 }
 
-function removesQuestion(){
-  $('.question-form').remove();
-}
-
-function removesFeedback(){
-  $('.feed-back').remove();
-}
-
 function handlesSubmit() {
   $('.question-section').on('submit','.question-form',function(event){
     event.preventDefault();
@@ -147,7 +130,6 @@ function handlesSubmit() {
     increasePage();
     removesQuestion();
     rendersFeedBack(generateFeedback(bol),bol);
-    
   });
 }
 
@@ -184,7 +166,6 @@ function generateFeedback(bool){
       <button type="button">Continue!</button>
       </div>`;
   }
-
 }
 
 function rendersFeedBack(html,bool){
@@ -204,6 +185,17 @@ function handleFeedbackButton(){
   });
 }
 
+function handlesScoreReset(){
+  $('.results').on('click','.reset',function(event){
+    console.log('reset is being clicked');
+    reset();
+    removeScorePage();
+    increasePage();
+    rendersQuestions();
+    randQuestions();
+  });
+}
+
 // makes html for score page
 function scorePage(){
   return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${QUESTIONS.length}</h1>
@@ -214,19 +206,24 @@ function renderScorePage(){
   $('.results').html(scorePage);
 }
 
+// need these functions because putting feedback, question, and scorepage on separate divs.
+// could probably make it easier if just put it in the body/main, so we could just use one render function
+// takes out intro
+function removesIntro() {
+  $('.intro-section').on('click', 'button', function (event) {
+    $('.intro-section').remove();
+    increasePage(); // intro page is page 0, so +1 when called to next page
+    rendersQuestions(); // renders the questions
+  });
+}
+function removesQuestion(){
+  $('.question-form').remove();
+}
+function removesFeedback(){
+  $('.feed-back').remove();
+}
 function removeScorePage(){
   $('.score-display').remove();
-}
-
-function handlesScoreReset(){
-  $('.results').on('click','.reset',function(event){
-    console.log('reset is being clicked');
-    reset();
-    removeScorePage();
-    increasePage();
-    rendersQuestions();
-    randQuestions();
-  });
 }
 
 function main() {

@@ -91,7 +91,8 @@ function increasePage() {
 
 // takes out intro
 function removesIntro() {
-  $('.intro-section').on('click', 'button', function (event) {
+  $('.intro-section').on('submit', function (event) {
+    event.preventDefault();
     increasePage(); // intro page is page 0, so +1 when called to next page
     setNumberOfQuestions();                                                       
     sliceQuesionArray();
@@ -114,7 +115,7 @@ function generateQuestions() {
   <p>${STORE.sliceArray[STORE.pageNumber-1].q}</p>
   ${q}
   <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
-  <div class='correct-wrong'>${correctWrong[0]} correct, ${correctWrong[1]} wrong</div>
+  <p>${correctWrong[0]} correct, ${correctWrong[1]} wrong</p>
 <footer>Page #${STORE.pageNumber}</footer>
 </form>
 `;
@@ -196,7 +197,7 @@ function generateFeedback(bool){
     return `<div class='feed-back'>
       <h2>Incorrect! </h2>
       <p>The correct answer for "${STORE.sliceArray[STORE.currentQuestion].q}" is ${STORE.sliceArray[STORE.currentQuestion].correctAnswer}!
-      <button type="button">Continue!</button>
+      <br><button type="button">Continue!</button>
       </div>`;
   }
 
@@ -222,11 +223,11 @@ function handleFeedbackButton(){
 // makes html for score page
 function scorePage(){
   return `<div class='score-display'>
-  <h1>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
-  <p>Do you want to try again?</p><span>
-  <button type="button" class='reset'>Ok</button>
+  <h1 class='h1-score'>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
   <form class='q-n'action="">
+  <p>Do you want to try again?</p>
   # of Q's between 1 to 10:<input type="number" name="quantity" required min="1" max="10">
+  <button type="submit" class='reset' value='reset'>Ok</button>
   </form>
   </div>
   `;
@@ -241,8 +242,9 @@ function removeScorePage(){
 }
 
 function handlesScoreReset(){
-  $('.results').on('click','.reset',function(event){
+  $('.results').on('submit',function(event){
     console.log('reset is being clicked');
+    event.preventDefault();
     reset();
     setNumberOfQuestions();
     sliceQuesionArray();

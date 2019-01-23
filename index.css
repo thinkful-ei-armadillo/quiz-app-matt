@@ -2,11 +2,31 @@
     box-sizing: border-box;
 }
 
+body{
+    display: flex;
+    background-image: url("https://previews.123rf.com/images/etiamos/etiamos1206/etiamos120600138/14180780-background-made-of-papers-with-colorful-numbers.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
 main{
+    flex: 1;
     font-family: 'Courier New', Courier, monospace;
+}
+
+div{
+    text-align: center;
+    justify-content: center;
+    margin-top: 300px;
+    
 }
 
 button {
     font-family : inherit;
     font-size: 1em;
+    margin: 10px;
+}
+
+.h1-score{
+    margin: 0;
 }

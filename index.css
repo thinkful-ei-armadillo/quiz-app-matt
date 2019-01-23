@@ -18,7 +18,11 @@ div{
     text-align: center;
     justify-content: center;
     margin-top: 300px;
-    
+}
+
+.question-form{
+    text-align: left;
+    margin-left: 90px;
 }
 
 button {

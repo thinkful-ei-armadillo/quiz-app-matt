@@ -126,7 +126,7 @@ function reset(){
   STORE.totalCorrect = 0;
   STORE.totalWrong = 0;
   STORE.pageNumber = 0;
-  STORE.currentQuestion = 0;
+  STORE.currentQuestion = -1;
 }
 
 function removesQuestion(){

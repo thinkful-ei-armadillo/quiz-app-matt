@@ -60,10 +60,12 @@ const STORE = {
   currentQuestion: -1, // current question. needed to make -1 since it is initially incremented and needs to match QUESTION index
   pageNumber: 0,
   sliceArray: [],
+  numberOfQuestions: 1,
 };
 
 // sets store object number of questions to user input
 function setNumberOfQuestions(){
+  console.log(STORE.pageNumber);
   STORE.numberOfQuestions = Number($('input[name="quantity"]').val());
 }
 
@@ -74,11 +76,11 @@ function sliceQuesionArray(){
 
 // function to shuffle QUESTIONS
 function randQuestions(){
-  for(let i = 0; i < QUESTIONS.length; i++){
-    const position = Math.floor(Math.random() * QUESTIONS.length);
+  for(let i = 0; i < STORE.sliceArray.length; i++){
+    const position = Math.floor(Math.random() * QUESTIONS.length-1);
     const temp = QUESTIONS[position];
-    QUESTIONS[position] = QUESTIONS[i];
-    QUESTIONS[i] = temp;
+    STORE.sliceArray[position%STORE.sliceArray.length] = QUESTIONS[i];
+    STORE.sliceArray[i] = temp;
   }
 }
 
@@ -90,8 +92,10 @@ function increasePage() {
 // takes out intro
 function removesIntro() {
   $('.intro-section').on('click', 'button', function (event) {
-    $('.intro-section').remove();
     increasePage(); // intro page is page 0, so +1 when called to next page
+    setNumberOfQuestions();                                                       
+    sliceQuesionArray();
+    $('.intro-section').remove();                                                          
     rendersQuestions(); // renders the questions
   });
 }
@@ -102,12 +106,12 @@ function generateQuestions() {
   const correctWrong = getTotalCorrect();
   
   STORE.currentQuestion++;
-  for (let i = 0; i < QUESTIONS[STORE.pageNumber - 1].choices.length; i++)
-    q += `<input type="radio" name="a1" value="${QUESTIONS[STORE.pageNumber-1].choices[i]}" required > ${QUESTIONS[STORE.pageNumber-1].choices[i]}<br>`;
+  for (let i = 0; i < STORE.sliceArray[STORE.pageNumber - 1].choices.length; i++)
+    q += `<input type="radio" name="a1" value="${STORE.sliceArray[STORE.pageNumber-1].choices[i]}" required > ${STORE.sliceArray[STORE.pageNumber-1].choices[i]}<br>`;
 
   return `<form action="" class='question-form'>
   <h2>Question ${STORE.pageNumber}</h2>
-  <p>${QUESTIONS[STORE.pageNumber-1].q}</p>
+  <p>${STORE.sliceArray[STORE.pageNumber-1].q}</p>
   ${q}
   <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
   <div class='correct-wrong'>${correctWrong[0]} correct, ${correctWrong[1]} wrong</div>
@@ -117,7 +121,7 @@ function generateQuestions() {
 }
 
 function rendersQuestions() {
-  if(STORE.pageNumber > 0 && STORE.pageNumber < QUESTIONS.length+1)
+  if(STORE.pageNumber > 0 && STORE.pageNumber < STORE.sliceArray.length+1) // changed this
     $('.question-section').html(generateQuestions());
 }
 
@@ -168,7 +172,7 @@ function answerChecker(input){
 
   console.log('checking your answer...');
   
-  if(userAns === QUESTIONS[STORE.pageNumber-1].correctAnswer){
+  if(userAns === STORE.sliceArray[STORE.pageNumber-1].correctAnswer){
     STORE.totalCorrect++;
     return true;
   }
@@ -191,7 +195,7 @@ function generateFeedback(bool){
   else{
     return `<div class='feed-back'>
       <h2>Incorrect! </h2>
-      <p>The correct answer for "${QUESTIONS[STORE.currentQuestion].q}" is ${QUESTIONS[STORE.currentQuestion].correctAnswer}!
+      <p>The correct answer for "${STORE.sliceArray[STORE.currentQuestion].q}" is ${STORE.sliceArray[STORE.currentQuestion].correctAnswer}!
       <button type="button">Continue!</button>
       </div>`;
   }
@@ -204,7 +208,7 @@ function rendersFeedBack(html,bool){
 
 function handleFeedbackButton(){
   $('.feedback-page').on('click','button', function(event){
-    if(STORE.pageNumber > QUESTIONS.length){
+    if(STORE.pageNumber > STORE.sliceArray.length){
       renderScorePage();
       removesFeedback();
     }
@@ -217,7 +221,7 @@ function handleFeedbackButton(){
 
 // makes html for score page
 function scorePage(){
-  return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${QUESTIONS.length}</h1>
+  return `<div class='score-display'><h1>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
   <p>Do you want to try again?</p><span><button type="button" class='reset'>Ok</button></div>`;
 }
 
@@ -235,8 +239,8 @@ function handlesScoreReset(){
     reset();
     removeScorePage();
     increasePage();
-    rendersQuestions();
     randQuestions();
+    rendersQuestions();
   });
 }
 

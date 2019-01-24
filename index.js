@@ -118,7 +118,7 @@ function generateQuestions() {
 
   <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
   <p>${correctWrong[0]} correct, ${correctWrong[1]} wrong</p>
-<footer>Page #${STORE.pageNumber}</footer>
+<footer role='contentinfo'>Page #${STORE.pageNumber}</footer>
 </form>
 `;
 }
@@ -191,13 +191,13 @@ function generateFeedback(bool){
 
   if(bool === true){
     return `<div class='feed-back'>
-      <h2>Correct! </h2>
+      <h2 role='banner'>Correct! </h2>
       <button type="button">Continue!</button>
       </div>`;
   }
   else{
     return `<div class='feed-back'>
-      <h2>Incorrect! </h2>
+      <h2 role='banner'>Incorrect! </h2>
       <p>The correct answer for "${STORE.sliceArray[STORE.currentQuestion].q}" is ${STORE.sliceArray[STORE.currentQuestion].correctAnswer}!
       <br><button type="button">Continue!</button>
       </div>`;
@@ -225,8 +225,8 @@ function handleFeedbackButton(){
 // makes html for score page
 function scorePage(){
   return `<div class='score-display'>
-  <h1 class='h1-score'>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
-  <form class='q-n'action="">
+  <h1 class='h1-score' role='banner'>You got ${STORE.totalCorrect} out of ${STORE.sliceArray.length}</h1>
+  <form class='q-n'action="" role='form'>
   <p>Do you want to try again?</p>
   # of Q's between 1 to 10:<input type="number" name="quantity" required min="1" max="10">
   <button type="submit" class='reset' value='reset'>Ok</button>

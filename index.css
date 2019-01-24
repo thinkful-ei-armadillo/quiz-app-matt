@@ -27,6 +27,15 @@ button {
     font-size: 1em;
     margin: 10px;
 }
+button:hover {background-color: dimgray;}
+button:active {
+    background-color: dimgray;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
+input{
+    cursor: pointer;
+}
 
 .h1-score{
     margin: 0;

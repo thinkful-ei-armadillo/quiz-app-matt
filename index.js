@@ -113,7 +113,9 @@ function generateQuestions() {
   return `<form action="" class='question-form'>
   <h2>Question ${STORE.pageNumber}</h2>
   <p>${STORE.sliceArray[STORE.pageNumber-1].q}</p>
+  
   ${q}
+
   <button type="submit" class="submit-button" data-submit='submit'>Submit</button>
   <p>${correctWrong[0]} correct, ${correctWrong[1]} wrong</p>
 <footer>Page #${STORE.pageNumber}</footer>
